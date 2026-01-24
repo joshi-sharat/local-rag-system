@@ -5,6 +5,6 @@ pytesseract==0.3.13
 pillow==10.4.0
 opensearch-py==2.7.1
 torch==2.4.1
-numpy==2.1.2
+numpy==2.0.2
 requests==2.32.3
 ollama==0.3.3

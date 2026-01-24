@@ -20,14 +20,14 @@ setup_logging()  # Set up centralized logging configuration
 logger = logging.getLogger(__name__)
 
 # Set page config with title, icon, and layout
-st.set_page_config(page_title="Jam with AI - Upload Documents", page_icon="📂")
+st.set_page_config(page_title="YogaBharati.org - Upload Documents", page_icon="📂")
 
 # Custom CSS to style the page and sidebar
 st.markdown(
     """
     <style>
     /* Main background and text colors */
-    body { background-color: #f0f8ff; color: #002B5B; }
+    body { background-color: #f0f8ff; color: black; }
     .sidebar .sidebar-content { background-color: #006d77; color: white; padding: 20px; border-right: 2px solid #003d5c; }
     .sidebar h2, .sidebar h4 { color: white; }
     .block-container { background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); }
@@ -36,26 +36,27 @@ st.markdown(
     .stButton button:hover { background-color: #07a6c2; color: white; }
     .stButton.delete-button button { background-color: #e63946; color: white; font-size: 14px; }
     .stButton.delete-button button:hover { background-color: #ff4c4c; }
-    h1, h2, h3, h4 { color: #006d77; }
+    h1, h2, h3, h4 { color: black; }
+    p, div, span, label { color: black; }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # Add a logo (replace with your own image file path or URL)
-logo_path = "images/jamwithai_logo.png"  # Replace with your logo file
+logo_path = "images/YBLogo.jpg"  # Replace with your logo file
 if os.path.exists(logo_path):
-    st.sidebar.image(logo_path, width=220)
+    st.sidebar.image(logo_path)
 else:
     st.sidebar.markdown("### Logo Placeholder")
     logger.warning("Logo not found, displaying placeholder.")
 
 # Sidebar header
 st.sidebar.markdown(
-    "<h2 style='text-align: center;'>Jam with AI</h2>", unsafe_allow_html=True
+    "<h2 style='text-align: center;'>YogaBharati.org</h2>", unsafe_allow_html=True
 )
 st.sidebar.markdown(
-    "<h4 style='text-align: center;'>Your Document Assistant</h4>",
+    "<h4 style='text-align: center;'>Your Yogic Assistant</h4>",
     unsafe_allow_html=True,
 )
 
@@ -63,7 +64,7 @@ st.sidebar.markdown(
 st.sidebar.markdown(
     """
     <div class="footer-text">
-        © 2025 Jam with AI
+        © 2025 YogaBharati.org
     </div>
     """,
     unsafe_allow_html=True,

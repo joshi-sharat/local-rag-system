@@ -17,23 +17,36 @@ setup_logging()  # Configures logging for the application
 logger = logging.getLogger(__name__)
 
 # Set page configuration
-st.set_page_config(page_title="Jam with AI - Chatbot", page_icon="🤖")
+st.set_page_config(page_title="YogicChat with AI - Chatbot", page_icon="🤖")
 
 # Apply custom CSS
 st.markdown(
     """
     <style>
     /* Main background and text colors */
-    body { background-color: #f0f8ff; color: #002B5B; }
-    .sidebar .sidebar-content { background-color: #006d77; color: white; padding: 20px; border-right: 2px solid #003d5c; }
+    body { background-color: white; color: black; }
+    .sidebar .sidebar-content { background-color: white; color: black; padding: 20px; border-right: 2px solid #003d5c; }
     .sidebar h2, .sidebar h4 { color: white; }
-    .block-container { background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); }
+    .block-container { background-color: white; color: black; border-radius: 10px; padding: 20px; }
     .footer-text { font-size: 1.1rem; font-weight: bold; color: black; text-align: center; margin-top: 10px; }
-    .stButton button { background-color: #118ab2; color: white; border-radius: 5px; padding: 10px 20px; font-size: 16px; }
-    .stButton button:hover { background-color: #07a6c2; color: white; }
-    h1, h2, h3, h4 { color: #006d77; }
-    .stChatMessage { background-color: #e0f7fa; color: #006d77; padding: 10px; border-radius: 5px; margin-bottom: 10px; }
-    .stChatMessage.user { background-color: #118ab2; color: white; }
+    .stButton button { background-color: white; color: black; border-radius: 5px; padding: 10px 20px; font-size: 16px; }
+    .stButton button:hover { background-color: white; color: black; }
+    h1, h2, h3, h4 { color: white; }
+    /* Ensure all chat messages (assistant and user) have white background and black text */
+    .stChatMessage,
+    .stChatMessage *,
+    .stChatMessage .message,
+    .stChatMessage .message p,
+    .stChatMessage.user,
+    .stChatMessage.assistant {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    .stChatMessage.user { background-color: #ffffff !important; color: #000000 !important; }
+    .stChatMessage.assistant { background-color: #ffffff !important; color: #000000 !important; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -44,7 +57,7 @@ logger.info("Custom CSS applied.")
 # Main chatbot page rendering function
 def render_chatbot_page() -> None:
     # Set up a placeholder at the very top of the main content area
-    st.title("Jam with AI - Chatbot 🤖")
+    st.title("YogicChat with AI - Chatbot 🤖")
     model_loading_placeholder = st.empty()
 
     # Initialize session state variables for chatbot settings
@@ -53,7 +66,7 @@ def render_chatbot_page() -> None:
     if "num_results" not in st.session_state:
         st.session_state["num_results"] = 5
     if "temperature" not in st.session_state:
-        st.session_state["temperature"] = 0.7
+        st.session_state["temperature"] = 0.0
 
     # Initialize OpenSearch client
     with st.spinner("Connecting to OpenSearch..."):
@@ -83,9 +96,9 @@ def render_chatbot_page() -> None:
     )
 
     # Display logo or placeholder
-    logo_path = "images/jamwithai_logo.png"
+    logo_path = "images/YBLogo.jpg"
     if os.path.exists(logo_path):
-        st.sidebar.image(logo_path, width=220)
+        st.sidebar.image(logo_path)
         logger.info("Logo displayed.")
     else:
         st.sidebar.markdown("### Logo Placeholder")
@@ -93,10 +106,10 @@ def render_chatbot_page() -> None:
 
     # Sidebar headers and footer
     st.sidebar.markdown(
-        "<h2 style='text-align: center;'>Jam with AI</h2>", unsafe_allow_html=True
+        "<h2 style='text-align: center;'>YogaBharati.org</h2>", unsafe_allow_html=True
     )
     st.sidebar.markdown(
-        "<h4 style='text-align: center;'>Your Conversational Platform</h4>",
+        "<h4 style='text-align: center;'>Your Yoga Conversational Platform</h4>",
         unsafe_allow_html=True,
     )
 
@@ -104,7 +117,7 @@ def render_chatbot_page() -> None:
     st.sidebar.markdown(
         """
         <div class="footer-text">
-            © 2025 Jam with AI
+            © 2025 Yogic Chat with AI
         </div>
         """,
         unsafe_allow_html=True,

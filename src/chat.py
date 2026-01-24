@@ -56,6 +56,7 @@ def run_llama_streaming(prompt: str, temperature: float) -> Optional[Iterable[st
         logger.info("Streaming response from LLaMA model.")
         stream = ollama.chat(
             model=OLLAMA_MODEL_NAME,
+        #    host="192.168.4.93:11434",
             messages=[{"role": "user", "content": prompt}],
             stream=True,
             options={"temperature": temperature},
@@ -79,7 +80,7 @@ def prompt_template(query: str, context: str, history: List[Dict[str, str]]) -> 
     Returns:
         str: Constructed prompt for Ollama model.
     """
-    prompt = "You are a knowledgeable chatbot assistant. "
+    prompt = "You are a knowledgeable Yoga Expert. Based on your knowledge give the practices used in a YogaBharati class. Keep it Short and Crisp, no repeats. Give the timelines and be mindful of the class duration asked for\n"
     if context:
         prompt += (
             "Use the following context to answer the question.\nContext:\n"
@@ -123,7 +124,7 @@ def generate_response_streaming(
         Optional[Iterable[str]]: A generator yielding response chunks as strings, or None if an error occurs.
     """
     chat_history = chat_history or []
-    max_history_messages = 10
+    max_history_messages = 1000
     history = chat_history[-max_history_messages:]
     context = ""
 

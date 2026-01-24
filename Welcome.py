@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 # Set page config with title, icon, and layout
 st.set_page_config(
-    page_title="Jam with AI - Your Conversational Platform", page_icon="🤖"
+    page_title="YogaBharati Yogi AI - Your Yogic Conversational Partner !", page_icon="🤖"
 )
 
 
@@ -23,8 +23,8 @@ def apply_custom_css() -> None:
         <style>
         /* Main background and text colors */
         body {
-            background-color: #f0f8ff;  /* Light cyan background */
-            color: #002B5B;  /* Dark blue text for readability */
+            background-color: #000000;  /* Light cyan background */
+            color: #fffff;  /* Dark blue text for readability */
         }
         .sidebar .sidebar-content {
             background-color: #006d77;  /* Dark cyan sidebar background */
@@ -36,6 +36,7 @@ def apply_custom_css() -> None:
             color: white;  /* White text for sidebar headings */
         }
         .block-container {
+            color: black;
             background-color: white;  /* White content background */
             border-radius: 10px;
             padding: 20px;
@@ -96,10 +97,10 @@ def display_logo(logo_path: str) -> None:
 # Function to display main content
 def display_main_content() -> None:
     """Displays the main welcome content on the page."""
-    st.title("Personal Document Assistant 📄🤖")
+    st.title("Personal Yogic Assistant 📄🤖")
     st.markdown(
         """
-        Welcome to the AI-Powered Document Retrieval Assistant 👋
+        Welcome to the AI-Powered Yogic Document Retrieval Assistant 👋
                 
         This app allows you to interact with an AI-powered assistant and upload documents for processing and retrieval.
         
@@ -117,16 +118,16 @@ def display_main_content() -> None:
 def display_sidebar_content() -> None:
     """Displays headers and footer content in the sidebar."""
     st.sidebar.markdown(
-        "<h2 style='text-align: center;'>Jam with AI</h2>", unsafe_allow_html=True
+        "<h2 style='text-align: center;'>YogaBharati AI</h2>", unsafe_allow_html=True
     )
     st.sidebar.markdown(
-        "<h4 style='text-align: center;'>Your Conversational Platform</h4>",
+        "<h4 style='text-align: center;'>Your Yogic Conversational Platform</h4>",
         unsafe_allow_html=True,
     )
     st.sidebar.markdown(
         """
         <div class="footer-text">
-            © 2024 Jam with AI
+            © 2025 YogaBharati.org
         </div>
         """,
         unsafe_allow_html=True,
@@ -137,6 +138,6 @@ def display_sidebar_content() -> None:
 # Main execution
 if __name__ == "__main__":
     apply_custom_css()
-    display_logo("images/jamwithai_logo.png")
+    display_logo("images/YBLogo.jpg")
     display_sidebar_content()
     display_main_content()
