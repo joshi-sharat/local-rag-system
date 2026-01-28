@@ -7,7 +7,7 @@ import anthropic
 
 from src.constants import ASSYMETRIC_EMBEDDING, OLLAMA_MODEL_NAME
 from src.embeddings import get_embedding_model
-from src.opensearch import hybrid_search
+from src.opensearch_Client import hybrid_search
 from src.utils import setup_logging
 
 # Initialize logger
