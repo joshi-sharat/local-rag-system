@@ -1,0 +1,10 @@
+class OpenSearchClient:
+    def __init__(self, host, port, index_name)
+    def create_index(self)
+    def index_document(self, doc_id, text, embedding, metadata)
+    def bulk_index(self, documents)
+    def hybrid_search(self, query_text, query_embedding, top_k)
+    def semantic_search(self, query_embedding, top_k)
+    def keyword_search(self, query_text, top_k)
+    def delete_document(self, doc_id)
+    def list_documents(self, limit, offset)

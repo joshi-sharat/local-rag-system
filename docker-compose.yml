@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  opensearch:
+    image: opensearchproject/opensearch:2.11.0
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.11.0
+    ports:
+      - "5601:5601"
+    environment:
+      - OPENSEARCH_HOSTS=http://opensearch:9200
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+    depends_on:
+      - opensearch
+
+  rag-service:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - OPENSEARCH_HOST=opensearch
+      - OPENSEARCH_PORT=9200
+      - EMBEDDING_MODEL_PATH=/app/embedding_model
+      - LLM_PROVIDER=anthropic
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - ./embedding_model:/app/embedding_model
+      - ./uploaded_files:/app/uploaded_files
+    depends_on:
+      - opensearch
+
+volumes:
+  opensearch_data:

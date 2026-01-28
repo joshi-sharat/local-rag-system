@@ -3,6 +3,7 @@ from typing import Dict, Iterable, List, Optional
 
 import ollama
 import streamlit as st
+import anthropic
 
 from src.constants import ASSYMETRIC_EMBEDDING, OLLAMA_MODEL_NAME
 from src.embeddings import get_embedding_model
@@ -105,9 +106,9 @@ def prompt_template(query: str, context: str, history: List[Dict[str, str]]) -> 
 
 def generate_response_streaming(
     query: str,
-    use_hybrid_search: bool,
-    num_results: int,
-    temperature: float,
+    use_hybrid_search: bool = True,
+    num_results: int = 3,
+    temperature: float = 0.0,
     chat_history: Optional[List[Dict[str, str]]] = None,
 ) -> Optional[Iterable[str]]:
     """
@@ -150,3 +151,26 @@ def generate_response_streaming(
     prompt = prompt_template(query, context, history)
 
     return run_llama_streaming(prompt, temperature)
+
+
+def generate_response_with_claude(query: str, context: str) -> str:
+    """Generate response using Claude instead of Ollama."""
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    
+    response = client.messages.create(
+        model=CLAUDE_MODEL,
+        max_tokens=4096,
+        messages=[
+            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+        ]
+    )
+    return response.content[0].text
+
+def generate_response(query: str, context: str, provider: str = None) -> str:
+    """Unified response generation."""
+    provider = provider or LLM_PROVIDER
+    
+    if provider == "anthropic":
+        return generate_response_with_claude(query, context)
+    else:
+        return generate_response_streaming(query)  # existing
