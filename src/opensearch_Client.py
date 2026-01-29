@@ -344,3 +344,180 @@ def get_opensearch_client(
         OpenSearchClient instance
     """
     return OpenSearchClient(host=host, port=port, index_name=index_name)
+
+
+# =============================================================================
+# STANDALONE FUNCTIONS (for backward compatibility with existing code)
+# =============================================================================
+
+# Global client instance for standalone functions
+_default_client: Optional[OpenSearchClient] = None
+
+
+def _get_default_client() -> OpenSearchClient:
+    """Get or create the default client instance."""
+    global _default_client
+    if _default_client is None:
+        # Import constants here to avoid circular imports
+        try:
+            from src.constants import OPENSEARCH_HOST, OPENSEARCH_PORT, INDEX_NAME
+            _default_client = OpenSearchClient(
+                host=OPENSEARCH_HOST,
+                port=OPENSEARCH_PORT,
+                index_name=INDEX_NAME,
+            )
+        except ImportError:
+            # Fallback to defaults
+            _default_client = OpenSearchClient(
+                host="localhost",
+                port=9200,
+                index_name="rag_documents",
+            )
+    return _default_client
+
+
+def hybrid_search(
+    query_text: str,
+    query_embedding: List[float],
+    top_k: int = 5,
+    client: Optional[OpenSearchClient] = None,
+) -> Dict:
+    """
+    Standalone function for hybrid search.
+    
+    Args:
+        query_text: Text query for BM25 search
+        query_embedding: Vector embedding for semantic search
+        top_k: Number of results to return
+        client: Optional OpenSearchClient instance (uses default if not provided)
+        
+    Returns:
+        Search results
+    """
+    if client is None:
+        client = _get_default_client()
+    response = client.hybrid_search(query_text, query_embedding, top_k); return response.get("hits", {}).get("hits", [])
+
+
+def semantic_search(
+    query_embedding: List[float],
+    top_k: int = 5,
+    client: Optional[OpenSearchClient] = None,
+) -> Dict:
+    """
+    Standalone function for semantic search.
+    
+    Args:
+        query_embedding: Vector embedding of the query
+        top_k: Number of results to return
+        client: Optional OpenSearchClient instance
+        
+    Returns:
+        Search results
+    """
+    if client is None:
+        client = _get_default_client()
+    return client.semantic_search(query_embedding, top_k)
+
+
+def keyword_search(
+    query_text: str,
+    top_k: int = 5,
+    client: Optional[OpenSearchClient] = None,
+) -> Dict:
+    """
+    Standalone function for keyword search.
+    
+    Args:
+        query_text: Text query
+        top_k: Number of results to return
+        client: Optional OpenSearchClient instance
+        
+    Returns:
+        Search results
+    """
+    if client is None:
+        client = _get_default_client()
+    return client.keyword_search(query_text, top_k)
+
+
+def index_document(
+    doc_id: str,
+    text: str,
+    embedding: List[float],
+    metadata: Optional[Dict[str, Any]] = None,
+    client: Optional[OpenSearchClient] = None,
+) -> Dict:
+    """
+    Standalone function to index a document.
+    
+    Args:
+        doc_id: Document ID
+        text: Document text
+        embedding: Document embedding
+        metadata: Optional metadata
+        client: Optional OpenSearchClient instance
+        
+    Returns:
+        Index response
+    """
+    if client is None:
+        client = _get_default_client()
+    return client.index_document(doc_id, text, embedding, metadata)
+
+
+def bulk_index(
+    documents: List[Dict[str, Any]],
+    client: Optional[OpenSearchClient] = None,
+) -> Dict:
+    """
+    Standalone function for bulk indexing.
+    
+    Args:
+        documents: List of documents
+        client: Optional OpenSearchClient instance
+        
+    Returns:
+        Bulk index response
+    """
+    if client is None:
+        client = _get_default_client()
+    return client.bulk_index(documents)
+
+
+def delete_document(
+    doc_id: str,
+    client: Optional[OpenSearchClient] = None,
+) -> Dict:
+    """
+    Standalone function to delete a document.
+    
+    Args:
+        doc_id: Document ID to delete
+        client: Optional OpenSearchClient instance
+        
+    Returns:
+        Delete response
+    """
+    if client is None:
+        client = _get_default_client()
+    return client.delete_document(doc_id)
+
+
+def create_index(
+    embedding_dimension: int = 768,
+    client: Optional[OpenSearchClient] = None,
+) -> bool:
+    """
+    Standalone function to create the index.
+    
+    Args:
+        embedding_dimension: Dimension of embeddings
+        client: Optional OpenSearchClient instance
+        
+    Returns:
+        True if created, False if exists
+    """
+    if client is None:
+        client = _get_default_client()
+    return client.create_index(embedding_dimension)

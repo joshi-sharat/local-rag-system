@@ -8,7 +8,7 @@ from pathlib import Path
 # Add the parent directory to sys.path to import from src
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -17,13 +17,19 @@ import logging
 # Import from src modules
 from src.constants import (
     EMBEDDING_MODEL_PATH,
+    EMBEDDING_DIMENSION,
     OLLAMA_MODEL_NAME,
     OPENSEARCH_HOST,
     OPENSEARCH_PORT,
 )
-from src.chat import generate_response
-from src.embeddings import get_embedding_model, generate_embeddings
-from src.opensearch_Client import get_opensearch_client, hybrid_search
+# INDEX_NAME may not exist in constants, provide default
+try:
+    from src.constants import INDEX_NAME
+except ImportError:
+    INDEX_NAME = "rag_documents"
+from src.chat import generate_response_streaming
+from src.embeddings import get_embedding_model
+from src.opensearch_client import OpenSearchClient, hybrid_search  # Import both class and function
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -59,12 +65,16 @@ def get_embedding_model_instance():
     return _embedding_model
 
 
-def get_opensearch_client_instance():
+def get_opensearch_client_instance() -> OpenSearchClient:
     """Lazy load the OpenSearch client."""
     global _opensearch_client
     if _opensearch_client is None:
         logger.info(f"Connecting to OpenSearch at {OPENSEARCH_HOST}:{OPENSEARCH_PORT}")
-        _opensearch_client = get_opensearch_client()
+        _opensearch_client = OpenSearchClient(
+            host=OPENSEARCH_HOST,
+            port=OPENSEARCH_PORT,
+            index_name=INDEX_NAME,
+        )
     return _opensearch_client
 
 
@@ -184,18 +194,27 @@ async def query_documents(request: QueryRequest):
     try:
         logger.info(f"Processing query: {request.query}")
         
-        # Get chat response using the existing chat module
-        response = generate_response(
+        # Get streaming response using the chat module
+        stream = generate_response_streaming(
             query=request.query,
-            top_k=request.top_k,
-            use_rag=request.use_rag,
+            use_hybrid_search=request.use_rag,
+            num_results=request.top_k,
             temperature=request.temperature,
             chat_history=request.chat_history or [],
         )
         
+        # Collect the streamed response
+        answer = ""
+        if stream:
+            for chunk in stream:
+                if hasattr(chunk, 'message') and hasattr(chunk.message, 'content'):
+                    answer += chunk.message.content
+                elif isinstance(chunk, dict) and 'message' in chunk:
+                    answer += chunk['message'].get('content', '')
+        
         return QueryResponse(
-            answer=response.get("answer", ""),
-            sources=response.get("sources", []),
+            answer=answer,
+            sources=None,
             query=request.query,
         )
     
@@ -216,12 +235,10 @@ async def search_documents(request: SearchRequest):
         
         # Get embedding model and generate query embedding
         model = get_embedding_model_instance()
-        query_embedding = generate_embeddings(request.query, model)
+        query_embedding = model.encode(request.query).tolist()
         
         # Perform hybrid search
-        client = get_opensearch_client_instance()
         results = hybrid_search(
-            client=client,
             query=request.query,
             query_embedding=query_embedding,
             top_k=request.top_k,
@@ -234,7 +251,7 @@ async def search_documents(request: SearchRequest):
                 score=hit.get("_score", 0.0),
                 metadata=hit.get("_source", {}).get("metadata", {}),
             )
-            for hit in results.get("hits", {}).get("hits", [])
+            for hit in results if isinstance(hit, dict)
         ]
         
         return SearchResponse(
@@ -248,7 +265,7 @@ async def search_documents(request: SearchRequest):
 
 
 @app.post("/embed", tags=["Utilities"])
-async def generate_embedding(text: str):
+async def generate_embedding_endpoint(text: str):
     """
     Generate embeddings for a given text.
     
@@ -256,7 +273,7 @@ async def generate_embedding(text: str):
     """
     try:
         model = get_embedding_model_instance()
-        embedding = generate_embeddings(text, model)
+        embedding = model.encode(text).tolist()
         return {
             "text": text,
             "embedding_dimension": len(embedding),

@@ -1,3 +1,6 @@
+from ollama import Client
+from src.constants import OLLAMA_HOST
+
 import logging
 from typing import Dict, Iterable, List, Optional
 
@@ -7,13 +10,15 @@ import anthropic
 
 from src.constants import ASSYMETRIC_EMBEDDING, OLLAMA_MODEL_NAME
 from src.embeddings import get_embedding_model
-from src.opensearch_Client import hybrid_search
+from src.opensearch_client import hybrid_search    # Sharat Added this line
 from src.utils import setup_logging
 
 # Initialize logger
 setup_logging()
 logger = logging.getLogger(__name__)
 
+# Create a client instance
+ollama_client = Client(host=OLLAMA_HOST)
 
 @st.cache_resource(show_spinner=False)
 def ensure_model_pulled(model: str) -> bool:
@@ -55,9 +60,8 @@ def run_llama_streaming(prompt: str, temperature: float) -> Optional[Iterable[st
     try:
         # Now attempt to stream the response from the model
         logger.info("Streaming response from LLaMA model.")
-        stream = ollama.chat(
+        stream = ollama_client.chat(
             model=OLLAMA_MODEL_NAME,
-        #    host="192.168.4.93:11434",
             messages=[{"role": "user", "content": prompt}],
             stream=True,
             options={"temperature": temperature},

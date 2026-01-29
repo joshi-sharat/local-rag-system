@@ -31,11 +31,11 @@ RAG_SERVICE_PORT = int(os.getenv("RAG_SERVICE_PORT", "8080"))
 
 # LLM Provider Selection (NEW)
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")  # "ollama" or "anthropic"
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "192.168.4.105:11434")
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://192.168.4.107:11434")
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "gemma3")
 
 # EXISTING (make configurable via env vars):
-EMBEDDING_MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", "embedding_model/")
+EMBEDDING_MODEL_PATH = os.getenv("EMBEDDING_MODEL_PATH", "sentence-transformers/all-mpnet-base-v2")
 EMBEDDING_DIMENSION = int(os.getenv("EMBEDDING_DIMENSION", "768"))
 TEXT_CHUNK_SIZE = int(os.getenv("TEXT_CHUNK_SIZE", "300"))
 

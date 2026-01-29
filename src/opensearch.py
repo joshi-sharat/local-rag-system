@@ -29,7 +29,7 @@ def get_opensearch_client() -> OpenSearch:
     return client
 
 
-def hybrid_search(
+def hybrid_search_tmp(
     query_text: str, query_embedding: List[float], top_k: int = 5
 ) -> List[Dict[str, Any]]:
     """
