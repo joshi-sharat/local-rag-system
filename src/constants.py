@@ -22,7 +22,7 @@ OPENSEARCH_INDEX = "documents"  # Index name for storing documents in OpenSearch
 
 
 # Service Configuration (NEW)
-RAG_SERVICE_HOST = os.getenv("RAG_SERVICE_HOST", "localhost")
+RAG_SERVICE_HOST = os.getenv("RAG_SERVICE_HOST", "0.0.0.0")
 RAG_SERVICE_PORT = int(os.getenv("RAG_SERVICE_PORT", "8080"))
 
 # LLM Provider Selection (NEW)

@@ -64,4 +64,4 @@ HEALTHCHECK --interval=60s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8080/health || exit 1
 
 # Run the RAG API application
-CMD ["python", "run_service.py"]
+CMD ["python", "run_service.py", "--host", "0.0.0.0", "--port", "8080"]
