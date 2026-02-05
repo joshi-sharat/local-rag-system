@@ -29,8 +29,7 @@ services:
       - OPENSEARCH_HOST=opensearch
       - OPENSEARCH_PORT=9200
       - EMBEDDING_MODEL_PATH=/app/embedding_model
-      - LLM_PROVIDER=anthropic
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - LLM_PROVIDER=ollama
     volumes:
       - ./embedding_model:/app/embedding_model
       - ./uploaded_files:/app/uploaded_files

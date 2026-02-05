@@ -7,10 +7,6 @@ ASSYMETRIC_EMBEDDING = False  # Flag for asymmetric embedding
 EMBEDDING_DIMENSION = 768  # Embedding model settings
 TEXT_CHUNK_SIZE = 300  # Maximum number of characters in each text chunk for
 
-OLLAMA_MODEL_NAME = (
-    "gemma3"  # Name of the model used in Ollama for chat functionality
-)
-OLLAMA_HOST = "192.168.4.93:11434"  # Host address for the Ollama server
 ####################################################################################################
 # Dont change the following settings
 ####################################################################################################
@@ -31,7 +27,7 @@ RAG_SERVICE_PORT = int(os.getenv("RAG_SERVICE_PORT", "8080"))
 
 # LLM Provider Selection (NEW)
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")  # "ollama" or "anthropic"
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://192.168.4.107:11434")
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://192.168.4.112:11434")
 OLLAMA_MODEL_NAME = os.getenv("OLLAMA_MODEL_NAME", "gemma3")
 
 # EXISTING (make configurable via env vars):

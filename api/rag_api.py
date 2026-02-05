@@ -18,6 +18,7 @@ import logging
 from src.constants import (
     EMBEDDING_MODEL_PATH,
     EMBEDDING_DIMENSION,
+    OLLAMA_HOST,
     OLLAMA_MODEL_NAME,
     OPENSEARCH_HOST,
     OPENSEARCH_PORT,
@@ -26,13 +27,16 @@ from src.constants import (
 try:
     from src.constants import INDEX_NAME
 except ImportError:
-    INDEX_NAME = "rag_documents"
+    INDEX_NAME = "documents"
+
 from src.chat import generate_response_streaming
 from src.embeddings import get_embedding_model
 from src.opensearch_client import OpenSearchClient, hybrid_search  # Import both class and function
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+from src.utils import setup_logging
+
+# Initialize logger
+setup_logging()
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
@@ -170,7 +174,7 @@ async def health_check():
     # Check LLM (Ollama)
     try:
         import requests
-        response = requests.get("http://localhost:11434/api/tags", timeout=5)
+        response = requests.get(f"http://{OLLAMA_HOST}:11434/api/tags", timeout=5)
         if response.status_code == 200:
             status["llm"] = f"connected ({OLLAMA_MODEL_NAME})"
         else:

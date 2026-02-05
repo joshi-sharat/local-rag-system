@@ -29,7 +29,7 @@ def get_opensearch_client() -> OpenSearch:
     return client
 
 
-def hybrid_search_tmp(
+def hybrid_search(
     query_text: str, query_embedding: List[float], top_k: int = 5
 ) -> List[Dict[str, Any]]:
     """
@@ -45,6 +45,8 @@ def hybrid_search_tmp(
     """
     client = get_opensearch_client()
 
+    logger.info(f"Performing hybrid search for query: '{query_text}' with top_k={top_k}")
+    
     query_body = {
         "_source": {"exclude": ["embedding"]},  # Exclude embeddings from the results
         "query": {
