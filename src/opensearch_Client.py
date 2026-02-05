@@ -4,6 +4,7 @@ Handles document indexing and hybrid search (BM25 + semantic).
 """
 from opensearchpy import OpenSearch
 from typing import List, Dict, Any, Optional
+from src.constants import OPENSEARCH_HOST, OPENSEARCH_PORT, OPENSEARCH_INDEX
 import logging
 
 logger = logging.getLogger(__name__)
@@ -328,9 +329,9 @@ class OpenSearchClient:
 
 # Convenience function to create a client instance
 def get_opensearch_client(
-    host: str = "localhost",
-    port: int = 9200,
-    index_name: str = "rag_documents",
+    host: str = OPENSEARCH_HOST,
+    port: int = OPENSEARCH_PORT,
+    index_name: str = OPENSEARCH_INDEX,
 ) -> OpenSearchClient:
     """
     Create and return an OpenSearch client instance.
@@ -356,22 +357,23 @@ _default_client: Optional[OpenSearchClient] = None
 
 def _get_default_client() -> OpenSearchClient:
     """Get or create the default client instance."""
+    from src.constants import OPENSEARCH_HOST, OPENSEARCH_PORT, OPENSEARCH_INDEX
     global _default_client
     if _default_client is None:
         # Import constants here to avoid circular imports
         try:
-            from src.constants import OPENSEARCH_HOST, OPENSEARCH_PORT, INDEX_NAME
+            from src.constants import OPENSEARCH_HOST, OPENSEARCH_PORT, OPENSEARCH_INDEX
             _default_client = OpenSearchClient(
                 host=OPENSEARCH_HOST,
                 port=OPENSEARCH_PORT,
-                index_name=INDEX_NAME,
+                index_name=OPENSEARCH_INDEX,
             )
         except ImportError:
             # Fallback to defaults
             _default_client = OpenSearchClient(
-                host="localhost",
-                port=9200,
-                index_name="rag_documents",
+                host=OPENSEARCH_HOST,
+                port=OPENSEARCH_PORT,
+                index_name=OPENSEARCH_INDEX,
             )
     return _default_client
 

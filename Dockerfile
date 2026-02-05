@@ -21,7 +21,7 @@ WORKDIR /app
 # - App runner (uvicorn ?)
 # - Build tools for Python packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    vim \\
+    vim \
     curl \
     procps \
     net-tools \
@@ -51,7 +51,7 @@ USER appuser
 
 
 # Install Python dependencies
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Add user's local bin to PATH
 ENV PATH="/home/appuser/.local/bin:${PATH}"

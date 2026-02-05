@@ -22,12 +22,8 @@ from src.constants import (
     OLLAMA_MODEL_NAME,
     OPENSEARCH_HOST,
     OPENSEARCH_PORT,
+    OPENSEARCH_INDEX,
 )
-# INDEX_NAME may not exist in constants, provide default
-try:
-    from src.constants import INDEX_NAME
-except ImportError:
-    INDEX_NAME = "documents"
 
 from src.chat import generate_response_streaming
 from src.embeddings import get_embedding_model
@@ -77,7 +73,7 @@ def get_opensearch_client_instance() -> OpenSearchClient:
         _opensearch_client = OpenSearchClient(
             host=OPENSEARCH_HOST,
             port=OPENSEARCH_PORT,
-            index_name=INDEX_NAME,
+            index_name=OPENSEARCH_INDEX,
         )
     return _opensearch_client
 
