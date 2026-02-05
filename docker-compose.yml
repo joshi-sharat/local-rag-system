@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   opensearch:
-    image: opensearchproject/opensearch:2.11.0
+    image: opensearchproject/opensearch:latest
     environment:
       - discovery.type=single-node
       - DISABLE_SECURITY_PLUGIN=true
@@ -12,7 +10,7 @@ services:
       - opensearch_data:/usr/share/opensearch/data
 
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:2.11.0
+    image: opensearchproject/opensearch-dashboards:latest
     ports:
       - "5601:5601"
     environment:
@@ -22,7 +20,11 @@ services:
       - opensearch
 
   rag-service:
-    build: .
+  #  image: rag-service:latest
+  #  container_name: rag_api
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     environment:

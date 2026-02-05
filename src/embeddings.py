@@ -2,7 +2,7 @@ import logging
 from typing import Any, List
 
 import numpy as np
-import streamlit as st
+#import streamlit as st
 from sentence_transformers import SentenceTransformer
 
 from src.constants import EMBEDDING_MODEL_PATH
@@ -13,7 +13,7 @@ setup_logging()  # Configures logging for the application
 logger = logging.getLogger(__name__)
 
 
-@st.cache_resource(show_spinner=False)
+#@st.cache_resource(show_spinner=False)
 def get_embedding_model() -> SentenceTransformer:
     """
     Loads and caches the embedding model.

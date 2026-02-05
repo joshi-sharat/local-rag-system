@@ -1,12 +1,11 @@
 from ollama import Client
-from src.constants import OLLAMA_HOST
+from src.constants import OLLAMA_HOST, LLM_PROVIDER
 
 import logging
 from typing import Dict, Iterable, List, Optional
 
 import ollama
-import streamlit as st
-import anthropic
+#import streamlit as st
 
 from src.constants import ASSYMETRIC_EMBEDDING, OLLAMA_MODEL_NAME
 from src.embeddings import get_embedding_model
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 # Create a client instance
 ollama_client = Client(host=OLLAMA_HOST)
 
-@st.cache_resource(show_spinner=False)
+#@st.cache_resource(show_spinner=False)
 def ensure_model_pulled(model: str) -> bool:
     """
     Ensures that the specified model is pulled and available locally.
@@ -157,24 +156,24 @@ def generate_response_streaming(
     return run_llama_streaming(prompt, temperature)
 
 
-def generate_response_with_claude(query: str, context: str) -> str:
-    """Generate response using Claude instead of Ollama."""
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-    
-    response = client.messages.create(
-        model=CLAUDE_MODEL,
-        max_tokens=4096,
-        messages=[
-            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
-        ]
-    )
-    return response.content[0].text
+# def generate_response_with_claude(query: str, context: str) -> str:
+#     """Generate response using Claude instead of Ollama."""
+#     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+#
+#     response = client.messages.create(
+#         model=CLAUDE_MODEL,
+#         max_tokens=4096,
+#         messages=[
+#             {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {query}"}
+#         ]
+#     )
+#     return response.content[0].text
 
 def generate_response(query: str, context: str, provider: str = None) -> str:
     """Unified response generation."""
     provider = provider or LLM_PROVIDER
-    
-    if provider == "anthropic":
-        return generate_response_with_claude(query, context)
-    else:
-        return generate_response_streaming(query)  # existing
+    #
+    # if provider == "anthropic":
+    #     return generate_response_with_claude(query, context)
+    #else:
+    return generate_response_streaming(query)  # existing
