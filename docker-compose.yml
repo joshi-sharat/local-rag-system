@@ -4,6 +4,7 @@ services:
     environment:
       - discovery.type=single-node
       - DISABLE_SECURITY_PLUGIN=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
     volumes:
@@ -14,7 +15,7 @@ services:
     ports:
       - "5601:5601"
     environment:
-      - OPENSEARCH_HOSTS=http://192.168.4.36:9200
+      - OPENSEARCH_HOSTS=http://opensearch:9200
       - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
     depends_on:
       - opensearch
@@ -28,10 +29,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - OPENSEARCH_HOST=http://192.168.4.36
+      - OPENSEARCH_HOST=opensearch
       - OPENSEARCH_PORT=9200
       - EMBEDDING_MODEL_PATH=/app/embedding_model
       - LLM_PROVIDER=ollama
+      - OLLAMA_HOST=localhost
+      - OLLAMA_PORT=11434
     volumes:
       - ./embedding_model:/app/embedding_model
       - ./uploaded_files:/app/uploaded_files

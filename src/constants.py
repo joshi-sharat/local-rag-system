@@ -19,6 +19,13 @@ OPENSEARCH_HOST = "localhost"  # Hostname for the OpenSearch instance
 OPENSEARCH_PORT = 9200  # Port number for OpenSearch
 OPENSEARCH_INDEX = "documents"  # Index name for storing documents in OpenSearch
 
+# ollama settings
+LLM_PROVIDER = "ollama"
+OLLAMA_HOST = "localhost"
+OLLAMA_PORT = 11434
+OLLAMA_MODEL_NAME = "gemma3"
+
+
 # Service Configuration (NEW)
 RAG_SERVICE_HOST = os.getenv("RAG_SERVICE_HOST", "localhost")
 RAG_SERVICE_PORT = int(os.getenv("RAG_SERVICE_PORT", "8080"))
