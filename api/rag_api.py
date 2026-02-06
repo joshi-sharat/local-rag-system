@@ -19,6 +19,7 @@ from src.constants import (
     EMBEDDING_MODEL_PATH,
     EMBEDDING_DIMENSION,
     OLLAMA_HOST,
+    OLLAMA_PORT,
     OLLAMA_MODEL_NAME,
     OPENSEARCH_HOST,
     OPENSEARCH_PORT,
@@ -170,7 +171,7 @@ async def health_check():
     # Check LLM (Ollama)
     try:
         import requests
-        response = requests.get(f"http://{OLLAMA_HOST}:11434/api/tags", timeout=5)
+        response = requests.get(f"http://{OLLAMA_HOST}:{OLLAMA_PORT}/api/tags", timeout=5)
         if response.status_code == 200:
             status["llm"] = f"connected ({OLLAMA_MODEL_NAME})"
         else:
