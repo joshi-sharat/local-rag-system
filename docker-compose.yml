@@ -33,8 +33,7 @@ services:
       - OPENSEARCH_PORT=9200
       - EMBEDDING_MODEL_PATH=/app/embedding_model
       - LLM_PROVIDER=ollama
-      - OLLAMA_HOST=localhost
-      - OLLAMA_PORT=11434
+      - OLLAMA_HOST=0.0.0.0:11434
     volumes:
       - ./embedding_model:/app/embedding_model
       - ./uploaded_files:/app/uploaded_files
